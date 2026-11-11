@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { hasAnyRole, isAdmin, isAdminOrSelf } from '../../access/roles'
+import { hasAnyRole, isAdmin, isAdminOrSelf } from '../access/roles'
 
 export const Users: CollectionConfig = {
   slug: 'users',
