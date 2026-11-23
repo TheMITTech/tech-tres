@@ -31,9 +31,10 @@ services:
       NODE_ENV: production
       PORT: "3000"
       HOSTNAME: "0.0.0.0"
-      DATABASE_URI: mongodb://mongo:27017/tech
+      DATABASE_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     depends_on:
-      - mongo
+      postgres:
+        condition: service_healthy
     networks:
       - traefik_bridge
       - internal
@@ -45,17 +46,25 @@ services:
       - "traefik.http.routers.tech-payload.tls.certresolver=leresolver"
       - "traefik.http.services.tech-payload.loadbalancer.server.port=3000"
 
-  mongo:
-    image: mongo:8
+    postgres:
+    image: postgres:18
     restart: unless-stopped
-    command: ["--storageEngine", "wiredTiger"]
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - mongo-data:/data/db
+      - postgres-data:/var/lib/postgresql
     networks:
       - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  mongo-data:
+  postgres-data:
 
 networks:
   traefik_bridge:
