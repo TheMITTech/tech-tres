@@ -72,7 +72,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: yarn payload migrate
+    restart: "no"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
 volumes:
   postgres-data:
 
