@@ -9,10 +9,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_bridge"
-      - "traefik.http.routers.tech-deux.rule=Host(`next.thetech.com`)"
-      - "traefik.http.routers.tech-deux.entrypoints=websecure"
-      - "traefik.http.routers.tech-deux.tls.certresolver=leresolver"
-      - "traefik.http.services.tech-deux.loadbalancer.server.port=4321"
+      - "traefik.http.routers.tech-tres.rule=Host(`next.thetech.com`)"
+      - "traefik.http.routers.tech-tres.entrypoints=websecure"
+      - "traefik.http.routers.tech-tres.tls.certresolver=leresolver"
+      - "traefik.http.services.tech-tres.loadbalancer.server.port=4321"
 
 networks:
   traefik_bridge:
