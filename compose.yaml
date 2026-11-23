@@ -1,17 +1,20 @@
 services:
   web:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
     restart: unless-stopped
     env_file:
-      -  .env
-    
+      - .env
     environment:
       NODE_ENV: production
       PORT: "3000"
       HOSTNAME: "0.0.0.0"
       PAYLOAD_INTERNAL_URL: http://payload:3000
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - traefik_bridge
       - internal
@@ -25,7 +28,7 @@ services:
 
   payload:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
     restart: unless-stopped
     env_file:
@@ -34,7 +37,7 @@ services:
       NODE_ENV: production
       PORT: "3000"
       HOSTNAME: "0.0.0.0"
-      DATABASE_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     depends_on:
       postgres:
         condition: service_healthy
@@ -49,7 +52,7 @@ services:
       - "traefik.http.routers.tech-payload.tls.certresolver=leresolver"
       - "traefik.http.services.tech-payload.loadbalancer.server.port=3000"
 
-    postgres:
+  postgres:
     image: postgres:18
     restart: unless-stopped
     environment:
@@ -72,5 +75,6 @@ volumes:
 networks:
   traefik_bridge:
     external: true
+    name: traefik_bridge
   internal:
     internal: true
