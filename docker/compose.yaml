@@ -2,7 +2,7 @@ services:
   web:
     build:
       context: ./web
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: Dockerfile
     restart: unless-stopped
     networks:
       - traefik_bridge
