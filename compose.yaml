@@ -22,7 +22,7 @@ services:
 
   payload:
     build:
-      context: ./payload
+      context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
     env_file:
