@@ -1,7 +1,7 @@
 services:
   web:
     build:
-      context: ../
+      context: ./web
       dockerfile: ./docker/web/Dockerfile
     restart: unless-stopped
     networks:
