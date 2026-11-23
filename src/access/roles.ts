@@ -20,6 +20,14 @@ export const hasAnyRole = ({ req: { user } }: { req: PayloadRequest }): boolean 
 export const isAdmin = ({ req: { user } }: { req: PayloadRequest }): boolean =>
   hasRole(user, 'admin')
 
+// Returns whether the user is an editor (or admin).
+export const isEditor = ({ req: { user } }: { req: PayloadRequest }): boolean =>
+  hasRole(user, 'editor')
+
+// Returns whether the user is business (or admin).
+export const isBusiness = ({ req: { user } }: { req: PayloadRequest }): boolean =>
+  hasRole(user, 'business')
+
 // Returns whether the user is an admin or is the owner of the document.
 export const isAdminOrSelf: Access = ({ req: { user } }) => {
   if (!user) return false
