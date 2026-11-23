@@ -1,29 +1,64 @@
 services:
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+      PAYLOAD_INTERNAL_URL: http://payload:3000
+    networks:
+      - traefik_bridge
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_bridge"
+      - "traefik.http.routers.tech-tres.rule=Host(`next.thetech.com`)"
+      - "traefik.http.routers.tech-tres.entrypoints=websecure"
+      - "traefik.http.routers.tech-tres.tls.certresolver=leresolver"
+      - "traefik.http.services.tech-tres.loadbalancer.server.port=3000"
+
   payload:
-    image: node:22.23.5-alpine
-    ports:
-      - '3000:3000'
-    volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
-    depends_on:
-      - mongo
+    build:
+      context: ./payload
+      dockerfile: Dockerfile
+    restart: unless-stopped
     env_file:
       - .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+      DATABASE_URI: mongodb://mongo:27017/tech
+    depends_on:
+      - mongo
+    networks:
+      - traefik_bridge
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_bridge"
+      - "traefik.http.routers.tech-payload.rule=Host(`cms.next.thetech.com`)"
+      - "traefik.http.routers.tech-payload.entrypoints=websecure"
+      - "traefik.http.routers.tech-payload.tls.certresolver=leresolver"
+      - "traefik.http.services.tech-payload.loadbalancer.server.port=3000"
 
   mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
+    image: mongo:8
+    restart: unless-stopped
+    command: ["--storageEngine", "wiredTiger"]
     volumes:
-      - data:/data/db
-    logging:
-      driver: none
+      - mongo-data:/data/db
+    networks:
+      - internal
 
 volumes:
-  data:
-  node_modules:
+  mongo-data:
+
+networks:
+  traefik_bridge:
+    external: true
+  internal:
+    internal: true
