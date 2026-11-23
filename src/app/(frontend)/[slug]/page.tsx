@@ -7,8 +7,7 @@ import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import { homeStatic } from '@/endpoints/seed/home-static'
 
-import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { RenderHero } from '@/heros/RenderHero'
+import RichText from '@/components/RichText'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
@@ -64,8 +63,6 @@ export default async function Page({ params: paramsPromise }: Args) {
     return <PayloadRedirects url={url} />
   }
 
-  const { hero, layout } = page
-
   return (
     <article className="pt-16 pb-24">
       <PageClient />
@@ -74,8 +71,10 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
-      <RenderHero {...hero} />
-      <RenderBlocks blocks={layout} />
+      <div className="container">
+        <h1 className="mb-8 text-4xl font-bold">{page.title}</h1>
+        <RichText data={page.content} enableGutter={false} />
+      </div>
     </article>
   )
 }
