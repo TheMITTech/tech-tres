@@ -100,6 +100,7 @@ export const seed = async ({
 
   const [demoAuthor, image1Doc, image2Doc, image3Doc, imageHomeDoc] = await Promise.all([
     payload.create({
+      draft: false, 
       collection: 'users',
       data: {
         name: 'Demo Author',
