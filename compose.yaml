@@ -16,7 +16,7 @@ services:
       postgres:
         condition: service_healthy
       migrate:
-        condition: service_completed_succesfully
+        condition: service_completed_successfully
     networks:
       - traefik_bridge
       - internal
