@@ -41,7 +41,7 @@ export const Authors: CollectionConfig = {
       type: 'array',
       admin: {
         description:
-          'Titles over time, from its start date until the next entry. Leave the date blank for a title held from the beginning (at most one row). An empty title means no title as of that date.',
+          'Titles over time, from its start date until the next entry. An empty title means no title as of that date.',
       },
       fields: [
         { name: 'title', type: 'text' },
