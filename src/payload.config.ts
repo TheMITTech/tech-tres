@@ -8,7 +8,7 @@ import { Authors } from './collections/Authors'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
+import { Articles } from './collections/Articles'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -65,7 +65,7 @@ export default buildConfig({
     },
     prodMigrations: migrations,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Authors],
+  collections: [Pages, Articles, Media, Categories, Users, Authors],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins,

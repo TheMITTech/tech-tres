@@ -12,6 +12,7 @@ import {
 } from '@payloadcms/richtext-lexical/react'
 
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
+import { getArticlePath } from '@/utilities/getArticlePath'
 
 import type {
   BannerBlock as BannerBlockProps,
@@ -26,13 +27,16 @@ type NodeTypes =
   | DefaultNodeTypes
   | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
 
-const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
-  const { value, relationTo } = linkNode.fields.doc!
-  if (typeof value !== 'object') {
-    throw new Error('Expected value to be an object')
-  }
-  const slug = value.slug
-  return relationTo === 'posts' ? `/posts/${slug}` : `/${slug}`
+  
+  const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
+    const { value, relationTo } = linkNode.fields.doc!
+    if (typeof value !== 'object') {
+      throw new Error('Expected value to be an object')
+    }
+    if (relationTo === 'articles') {
+      return getArticlePath(value as { slug?: string | null; publishedAt?: string | null })
+    }
+    return `/${value.slug}`
 }
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
